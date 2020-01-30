@@ -8,12 +8,37 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-
+variables:
+  buildConfiguration: 'Release'
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '3.x=>'
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'becauseimclever'
+    scannerMode: 'MSBuild'
+    projectKey: 'Fortinbra_DeviceBase'
+    projectName: 'DeviceBase'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: 'DeviceBase.sln'
+    feedsToUse: 'select'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'DeviceBase.sln'
+    arguments: '--configuration $(buildconfiguration)'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: 'DeviceBase.sln'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --logger trx'
+    testRunTitle: 'All Tests'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
