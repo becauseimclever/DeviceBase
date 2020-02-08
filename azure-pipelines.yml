@@ -35,11 +35,6 @@ steps:
     arguments: '--configuration $(buildconfiguration)'
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj'
-    versioningScheme: 'byBuildNumber'
-- task: DotNetCoreCLI@2
-  inputs:
     command: 'test'
     projects: 'DeviceBase.sln'
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --logger trx'
