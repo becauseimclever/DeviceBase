@@ -1,53 +1,53 @@
-# ASP.NET Core
-
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 
 trigger:
 - master
 
 pool:
-  #vmImage: 'Ubuntu-16.04'
-  vmImage: 'windows-2019'
+  #vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 variables:
   buildConfiguration: 'Release'
 steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '3.1.100'
-
-- script: dotnet restore
-
-- task: DotNetCoreCLI@2
-  displayName: Build
+    version: '3.1.x'
+- task: SonarCloudPrepare@1
   inputs:
-    command: build
-    projects: '**/*.csproj'
+    SonarCloud: 'SonarCloud'
+    organization: 'becauseimclever'
+    scannerMode: 'MSBuild'
+    projectKey: 'Fortinbra_DeviceBase'
+    projectName: 'DeviceBase'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: 'DeviceBase.sln'
+    feedsToUse: 'select'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'DeviceBase.sln'
     arguments: '--configuration $(buildconfiguration)'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: 'AutomationUnitTests/AutomationUnitTests.csproj'
-    arguments: '--configuration $(BuildConfiguration)
- /p:CollectCoverage=true
- /p:CoverletOutputFormat=cobertura 
- /p:CoverletOutput=$(Build.SourcesDirectory)\TestResults\Coverage\'
-    testRunTitle: 'Unit Tests'
-    
-- task: reportgenerator@4
+    projects: 'DeviceBase.sln'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --logger trx'
+    testRunTitle: 'All Tests'
+- task: DotNetCoreCLI@2
   inputs:
-    reports: '$(Build.SourcesDirectory)\TestResults\Coverage\*.xml'
-    targetdir: '$(Build.SourcesDirectory)\coveragereport'
-
-- task: PublishCodeCoverageResults@1
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    versioningScheme: 'byPrereleaseNumber'
+    majorVersion: '1'
+    minorVersion: '0'
+    patchVersion: '0'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
   inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/coveragereport/Cobertura.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
-    failIfCoverageEmpty: true
-- task: PublishTestResults@2
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
+    pollingTimeoutSec: '300'
