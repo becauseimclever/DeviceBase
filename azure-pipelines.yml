@@ -47,6 +47,10 @@ steps:
     majorVersion: '1'
     minorVersion: '0'
     patchVersion: '0'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    publishLocation: 'pipeline'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'push'
