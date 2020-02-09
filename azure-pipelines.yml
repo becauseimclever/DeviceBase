@@ -52,6 +52,12 @@ steps:
     targetPath: '$(Pipeline.Workspace)'
     artifact: '*.nupkg'
     publishLocation: 'pipeline'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'c64eac06-a5dc-4837-b121-13429513d7a1/5f95ea8c-eff7-41ff-83aa-d52760b08d27'
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:
