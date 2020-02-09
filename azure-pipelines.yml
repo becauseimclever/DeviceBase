@@ -47,6 +47,11 @@ steps:
     majorVersion: '1'
     minorVersion: '0'
     patchVersion: '0'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: '*.nupkg'
+    publishLocation: 'pipeline'
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:
