@@ -46,7 +46,18 @@ steps:
     versioningScheme: 'byPrereleaseNumber'
     majorVersion: '1'
     minorVersion: '0'
-    patchVersion: '0'
+    patchVersion: '2'
+    outputDir: '$(Build.ArtifactStagingDirectory)'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    publishLocation: 'pipeline'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'c64eac06-a5dc-4837-b121-13429513d7a1/5f95ea8c-eff7-41ff-83aa-d52760b08d27'
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:
