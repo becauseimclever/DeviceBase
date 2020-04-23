@@ -7,7 +7,7 @@ namespace BecauseImClever.HomeAutomation.DeviceBase.Abstractions
     {
         public string Name { get; }
         public string Description { get; }
-        public IEnumerable<IDeviceAction> DeviceActions { get; }
+        public IEnumerable<IDevice> Devices { get; }
         public void RegisterDependencies(IServiceCollection services);
     }
 }

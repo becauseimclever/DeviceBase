@@ -8,7 +8,7 @@ namespace BecauseImClever.HomeAutomation.DeviceBase.Abstractions
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<IDeviceAction> Actions { get; internal set; }
+        public IEnumerable<IDeviceAction> Actions { get; }
         public ValueTask Invoke(string TopicPath, string Payload);
 
     }

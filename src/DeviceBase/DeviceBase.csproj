@@ -12,7 +12,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Fortinbra/DeviceBase</RepositoryUrl>
     <PackageId>BecauseImClever.HomeAutomation.DeviceBase</PackageId>
-    <Version>1.0.2-beta</Version>
+    <Version>1.0.3-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
